@@ -2,6 +2,8 @@
 name = "apple-password-gen"
 version = "0.1.0"
 edition = "2021"
+description = "Generate passwords in the format used by Apple's Strong Password Suggestion"
+license = "MPL-2.0"
 
 [dependencies]
 rand = "0.8.5"

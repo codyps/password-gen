@@ -24,7 +24,7 @@ pub fn generate() -> String {
 /// See [`generate`] for more information.
 ///
 /// Be sure to pick a secure rng. `rand_core::OsRng`, for example.
-pub fn generate_with_rng<T: rand_core::SecureRng>(rng: T) -> String {
+pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
     assert_eq!(VOWELS.len(), 6);
     assert_eq!(CONSONANTS.len(), 19);
 

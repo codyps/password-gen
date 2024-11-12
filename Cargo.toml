@@ -1,0 +1,8 @@
+[package]
+name = "apple-password-gen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5"
+rand_core = "0.6.4"

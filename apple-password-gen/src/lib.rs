@@ -14,6 +14,7 @@ const CONSONANTS: &'static [u8] = b"bcdfghjkmnpqrstvwxz";
 /// Suggestion, except we don't include filtering for "bad" words. If you have a
 /// "bad" words matcher, call this function repeatedly until no bad words are
 /// found.
+#[must_use]
 pub fn generate() -> String {
     generate_with_rng(OsRng)
 }
@@ -24,6 +25,7 @@ pub fn generate() -> String {
 /// See [`generate`] for more information.
 ///
 /// Be sure to pick a secure rng. `rand_core::OsRng`, for example.
+#[must_use]
 pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
     assert_eq!(VOWELS.len(), 6);
     assert_eq!(CONSONANTS.len(), 19);

@@ -1,3 +1,3 @@
 fn main() {
-    apple_password_gen::generate();
+    println!("{}", apple_password_gen::generate());
 }

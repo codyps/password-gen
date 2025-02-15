@@ -1,6 +1,6 @@
 [package]
 name = "apple-password-gen"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Generate passwords in the format used by Apple's Strong Password Suggestion"
 license = "MPL-2.0"

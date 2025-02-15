@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::{Rng, TryRngCore};
 use rand_core::OsRng;
 
 const VOWELS: &'static [u8] = b"aeiouy";
@@ -16,7 +16,7 @@ const CONSONANTS: &'static [u8] = b"bcdfghjkmnpqrstvwxz";
 /// found.
 #[must_use]
 pub fn generate() -> String {
-    generate_with_rng(OsRng)
+    generate_with_rng(OsRng.unwrap_err())
 }
 
 /// Generate a random password in the form of `cvccvc-cvccvc-cvccvc`, with 1
@@ -53,7 +53,7 @@ pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
         ) - 1;
 
     // pick number position. The number replaces a potential letter
-    let mut number_i = rng.gen_range(0..number_pos_ct);
+    let mut number_i = rng.random_range(0..number_pos_ct);
     let mut number_pos = None;
     for (i, p) in pattern_nu.iter().enumerate() {
         if *p == b'1' {
@@ -67,7 +67,7 @@ pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
     let number_pos = number_pos.unwrap();
 
     // pick upper-case position. This modifies a chosen letter
-    let uppercase_pos = rng.gen_range(0..letter_pos_ct);
+    let uppercase_pos = rng.random_range(0..letter_pos_ct);
 
     let mut output = String::with_capacity(pattern_cv.len());
 
@@ -75,27 +75,27 @@ pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
     let mut letter_pos = 0;
     for (i, p) in pattern_cv.iter().enumerate() {
         if i == number_pos {
-            output.push_str(&format!("{}", rng.gen_range(0..10)));
+            output.push_str(&format!("{}", rng.random_range(0..10)));
         } else {
             match *p {
                 b'c' => {
                     if letter_pos == uppercase_pos {
                         output.push(
-                            CONSONANTS[rng.gen_range(0..CONSONANTS.len())].to_ascii_uppercase()
+                            CONSONANTS[rng.random_range(0..CONSONANTS.len())].to_ascii_uppercase()
                                 as char,
                         );
                     } else {
-                        output.push(CONSONANTS[rng.gen_range(0..CONSONANTS.len())] as char);
+                        output.push(CONSONANTS[rng.random_range(0..CONSONANTS.len())] as char);
                     }
                     letter_pos += 1;
                 }
                 b'v' => {
                     if letter_pos == uppercase_pos {
                         output.push(
-                            VOWELS[rng.gen_range(0..VOWELS.len())].to_ascii_uppercase() as char
+                            VOWELS[rng.random_range(0..VOWELS.len())].to_ascii_uppercase() as char,
                         );
                     } else {
-                        output.push(VOWELS[rng.gen_range(0..VOWELS.len())] as char);
+                        output.push(VOWELS[rng.random_range(0..VOWELS.len())] as char);
                     }
                     letter_pos += 1;
                 }

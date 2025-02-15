@@ -4,6 +4,8 @@ version = "0.1.1"
 edition = "2021"
 description = "Generate passwords in the format used by Apple's Strong Password Suggestion"
 license = "MPL-2.0"
+repository = "https://github.com/codyps/password-gen"
+documentation = "https://docs.rs/apple-password-gen"
 
 [dependencies]
 rand = "0.9.0"

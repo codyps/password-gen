@@ -1,5 +1,4 @@
-use rand::{Rng, TryRngCore};
-use rand_core::OsRng;
+use rand::{rand_core::UnwrapErr, rngs::SysRng, CryptoRng, RngExt};
 
 const VOWELS: &[u8] = b"aeiouy";
 // no `l`
@@ -18,16 +17,16 @@ const CONSONANTS: &[u8] = b"bcdfghjkmnpqrstvwxz";
 /// found.
 #[must_use]
 pub fn generate() -> String {
-    generate_with_rng(OsRng.unwrap_err())
+    generate_with_rng(UnwrapErr(SysRng))
 }
 
 /// Generate a password in the same format as [`generate`], using the supplied RNG.
 ///
 /// See [`generate`] for more information.
 ///
-/// Be sure to pick a secure rng. `rand_core::OsRng`, for example.
+/// Be sure to pick a secure RNG, such as `rand::rand_core::UnwrapErr(rand::rngs::SysRng)`.
 #[must_use]
-pub fn generate_with_rng<T: rand::CryptoRng + Rng>(mut rng: T) -> String {
+pub fn generate_with_rng<T: CryptoRng>(mut rng: T) -> String {
     // C = consonant, V = vowel, D = digit. A digit goes before or after
     // a CVC+CV group; it does not replace the first consonant of CVC+CVC.
     const PATTERNS: [&[u8; 20]; 5] = [

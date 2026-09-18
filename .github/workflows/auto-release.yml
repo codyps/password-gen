@@ -1,0 +1,49 @@
+name: Automatic release
+
+on:
+  schedule:
+    # Poll hourly; the script enforces 7 elapsed days, not calendar week boundaries.
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Check eligibility without merging
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  # Share the release PR writer's lock so it cannot update the PR during review.
+  group: release-plz-refs/heads/master
+  cancel-in-progress: false
+
+jobs:
+  auto-release:
+    if: github.repository == 'codyps/password-gen' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout trusted default branch
+        timeout-minutes: 2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check interval and merge eligible release PR
+        timeout-minutes: 3
+        env:
+          # No github.token fallback: the merge must trigger the publishing workflow.
+          GH_TOKEN: ${{ secrets.RELEASE_PLZ_TOKEN }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo "::error::RELEASE_PLZ_TOKEN is required to trigger publishing after merge"
+            exit 1
+          fi
+          args=()
+          if [[ "$DRY_RUN" != "true" ]]; then
+            args+=(--merge)
+          fi
+          python3 .github/scripts/auto_release.py "${args[@]}"

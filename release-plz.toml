@@ -1,0 +1,4 @@
+[workspace]
+# Prepare versions in a PR; only a merged release PR publishes a crate.
+release_always = false
+git_tag_name = "{{ package }}-v{{ version }}"
